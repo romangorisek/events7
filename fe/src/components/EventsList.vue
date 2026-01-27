@@ -89,7 +89,9 @@ const pageTitle = computed(() => route.meta.title)
 
 const filter = ref('')
 
-eventsStore.fetchEvents()
+if (!eventsStore.events.length) {
+  eventsStore.fetchEvents()
+}
 
 const deleteEventConfirm = (eventId: string): void => {
   console.log('should show the confirm popup ' + eventId)

@@ -1,4 +1,4 @@
-import type { AnalyticsEvent } from '@/types'
+import type { NewAnalyticsEvent, AnalyticsEvent } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -46,8 +46,13 @@ export const useEventsStore = defineStore('events', () => {
     ]
   }
 
-  function createEvent(event: AnalyticsEvent): void {
-    events.value.push(event)
+  function createEvent(event: NewAnalyticsEvent): void {
+    const data = {
+      id: crypto.randomUUID(),
+      ...event,
+    }
+
+    events.value.push(data)
   }
 
   function updateEvent(newEvent: AnalyticsEvent): void {
@@ -58,9 +63,7 @@ export const useEventsStore = defineStore('events', () => {
   }
 
   function deleteEvent(eventId: string): void {
-    console.log('delete event ' + eventId)
     events.value = events.value.filter((e) => e.id !== eventId)
-    console.log('events', events.value)
   }
 
   return { events, fetchEvents, createEvent, updateEvent, deleteEvent }
