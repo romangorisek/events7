@@ -68,12 +68,16 @@ import { useRouter } from 'vue-router'
 const $q = useQuasar()
 const router = useRouter()
 
-const formData = ref({
+
+const getInitialFormData = () => ({
   name: '',
   description: '',
   type: null,
   priority: null,
 })
+
+const formData = ref(getInitialFormData())
+
 
 const typeOptions = [
   { label: 'crosspromo', value: 'crosspromo', color: 'grey-6' },
@@ -99,12 +103,7 @@ const onCancel = () => {
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    formData.value = {
-      name: '',
-      description: '',
-      type: null,
-      priority: null,
-    }
+    formData.value = getInitialFormData()
     router.back()
   })
 }
