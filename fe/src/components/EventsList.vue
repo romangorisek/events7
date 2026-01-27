@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-lg bg-grey-1">
-    <h4 class="text-h4 text-weight-bold q-ma-none q-mb-lg">{{ pageTitle }}</h4>
+    <h4 class="text-h4 text-weight-bold q-mt-none q-mb-lg">{{ pageTitle }}</h4>
 
     <div class="row justify-between items-center q-mb-md">
       <q-btn outline color="primary" label="New event" icon="add" :to="{ name: 'eventsCreate' }" />

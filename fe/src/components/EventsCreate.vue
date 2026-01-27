@@ -1,7 +1,7 @@
 <template>
-  <div class="q-pa-lg bg-grey-1 row justify-center">
+  <div class="q-pa-lg bg-grey-1 row">
     <div class="col-xs-12 col-md-8 col-lg-6">
-      <h4 class="text-h4 text-weight-bold q-ma-none q-mb-lg text-center">New event</h4>
+      <h4 class="text-h4 text-weight-bold q-mt-none q-mb-lg">New event</h4>
 
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-sm q-mt-lg">
         <div class="q-mb-md">
@@ -9,6 +9,7 @@
           <q-input
             outlined
             dense
+            lazy-rules="ondemand"
             v-model="formData.name"
             :rules="[(val) => (val && val.length > 0) || 'Value is required']"
           />
@@ -19,6 +20,7 @@
           <q-input
             outlined
             dense
+            lazy-rules="ondemand"
             type="textarea"
             v-model="formData.description"
             :rules="[(val) => (val && val.length > 0) || 'Value is required']"
@@ -30,6 +32,7 @@
           <q-select
             outlined
             dense
+            lazy-rules="ondemand"
             v-model="formData.type"
             :options="typeOptions"
             :rules="[(val) => val !== null || 'Value is required']"
@@ -41,6 +44,7 @@
           <q-select
             outlined
             dense
+            lazy-rules="ondemand"
             v-model="formData.priority"
             :options="priorityOptions"
             :rules="[(val) => val !== null || 'Value is required']"
