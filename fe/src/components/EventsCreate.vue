@@ -3,7 +3,7 @@
     <div class="col-xs-12 col-md-8 col-lg-6">
       <h4 class="text-h4 text-weight-bold q-mt-none q-mb-lg">New event</h4>
 
-      <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-sm q-mt-lg">
+      <q-form @submit="onSubmit" class="q-gutter-sm q-mt-lg">
         <div class="q-mb-md">
           <q-item-label class="q-pb-xs">Name *</q-item-label>
           <q-input
@@ -53,7 +53,7 @@
 
         <div>
           <q-btn label="Submit" type="submit" color="primary" />
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="onCancel" />
         </div>
       </q-form>
     </div>
@@ -63,8 +63,10 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
 
 const $q = useQuasar()
+const router = useRouter()
 
 const formData = ref({
   name: '',
@@ -88,6 +90,16 @@ const onSubmit = () => {
     type: 'positive',
     message: 'Event created successfully',
   })
+}
+
+const onCancel = () => {
+  formData.value = {
+    name: '',
+    description: '',
+    type: null,
+    priority: null,
+  }
+  router.back()
 }
 </script>
 

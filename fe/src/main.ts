@@ -19,7 +19,9 @@ app.use(Quasar, {
     Notify,
   },
   config: {
-    notify: {},
+    notify: {
+      position: 'top-right',
+    },
   },
 })
 
