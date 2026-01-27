@@ -66,5 +66,22 @@ export const useEventsStore = defineStore('events', () => {
     events.value = events.value.filter((e) => e.id !== eventId)
   }
 
-  return { events, fetchEvents, createEvent, updateEvent, deleteEvent }
+  const typeOptions = [
+    { label: 'crosspromo', value: 'crosspromo', color: 'grey-6' },
+    { label: 'liveops', value: 'liveops', color: 'green' },
+    { label: 'app', value: 'app', color: 'yellow' },
+    { label: 'ads', value: 'ads', color: 'red' },
+  ]
+
+  const priorityOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  return {
+    events,
+    fetchEvents,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+    typeOptions,
+    priorityOptions,
+  }
 })

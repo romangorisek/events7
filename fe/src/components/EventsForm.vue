@@ -30,7 +30,7 @@
         dense
         lazy-rules="ondemand"
         v-model="model.type"
-        :options="typeOptions"
+        :options="eventsStore.typeOptions"
         :rules="[(val) => val !== null || 'Value is required']"
       />
     </div>
@@ -42,7 +42,7 @@
         dense
         lazy-rules="ondemand"
         v-model="model.priority"
-        :options="priorityOptions"
+        :options="eventsStore.priorityOptions"
         :rules="[(val) => val !== null || 'Value is required']"
       />
     </div>
@@ -55,18 +55,11 @@
 </template>
 
 <script lang="ts" setup>
+import { useEventsStore } from '@/stores/events'
 
+const eventsStore = useEventsStore()
 
-const typeOptions = [
-  { label: 'crosspromo', value: 'crosspromo', color: 'grey-6' },
-  { label: 'liveops', value: 'liveops', color: 'green' },
-  { label: 'app', value: 'app', color: 'yellow' },
-  { label: 'ads', value: 'ads', color: 'red' },
-];
+const model = defineModel({ required: true })
 
-const priorityOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-const model = defineModel({ required: true });
-
-const emit = defineEmits(['submit', 'cancel']);
+const emit = defineEmits(['submit', 'cancel'])
 </script>
