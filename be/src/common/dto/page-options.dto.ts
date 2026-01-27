@@ -39,5 +39,5 @@ export class PageOptionsDto {
   @IsOptional()
   @Type(() => String)
   @IsString()
-  readonly filters?: string;
+  readonly filter?: string;
 }

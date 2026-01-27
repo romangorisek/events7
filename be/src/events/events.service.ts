@@ -20,7 +20,6 @@ export class EventsService {
   }
 
   async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<Event>> {
-    console.log('what the f is the sortBy thing??', pageOptionsDto.sortBy);
     const findManyOptions: FindManyOptions<Event> = {
       skip: pageOptionsDto.skip,
       take: pageOptionsDto.take,
@@ -31,13 +30,18 @@ export class EventsService {
       };
     }
 
-    if (pageOptionsDto.filters) {
-      const filter = `%${pageOptionsDto.filters}%`;
-      findManyOptions.where = [
+    if (pageOptionsDto.filter) {
+      const filter = `%${pageOptionsDto.filter}%`;
+      const where: any[] = [
         { name: ILike(filter) },
         { description: ILike(filter) },
         { type: ILike(filter) },
       ];
+
+      if (!isNaN(Number(pageOptionsDto.filter))) {
+        where.push({ priority: Number(pageOptionsDto.filter) });
+      }
+      findManyOptions.where = where;
     }
 
     const [entities, itemCount] =

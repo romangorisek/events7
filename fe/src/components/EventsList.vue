@@ -9,6 +9,7 @@
         v-model="filter"
         outlined
         dense
+        debounce="300"
         placeholder="Search..."
         bg-color="white"
         style="width: 300px"
@@ -23,10 +24,12 @@
       :rows="eventsStore.events"
       :columns="columns"
       row-key="id"
+      v-model:pagination="pagination"
+      :loading="loading"
       :filter="filter"
+      @request="onRequest"
       flat
       bordered
-      :pagination="{ rowsPerPage: 10 }"
     >
       <template v-slot:body-cell-description="props">
         <q-td :props="props">
@@ -79,9 +82,10 @@
 
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import { useEventsStore } from '@/stores/events'
+import { Order } from '@/types'
 
 const route = useRoute()
 const eventsStore = useEventsStore()
@@ -90,20 +94,47 @@ const $q = useQuasar()
 const pageTitle = computed(() => route.meta.title)
 
 const loading = ref(false)
-
 const filter = ref('')
+const pagination = ref({
+  sortBy: 'id',
+  descending: false,
+  page: 1,
+  rowsPerPage: 10,
+  rowsNumber: 10,
+})
 
-if (!eventsStore.events.length) {
+async function onRequest(props) {
+   console.log('what is this onRequest', props);
+  const { page, rowsPerPage, sortBy, descending } = props.pagination
+  const filter = props.filter
+
   loading.value = true
-  eventsStore.fetchEvents().catch(() => {
-    $q.notify({
-      type: 'negative',
-      message: `Cannot load event data.`,
-    })
-  }).finally(() => {
-    loading.value = false
+
+  await eventsStore.fetchEvents({
+    page,
+    take: rowsPerPage,
+    sortBy,
+    order: descending ? Order.DESC : Order.ASC,
+    filter: filter,
   })
+
+  pagination.value.page = page
+  pagination.value.rowsPerPage = rowsPerPage
+  pagination.value.sortBy = sortBy
+  pagination.value.descending = descending
+  if (eventsStore.meta) {
+    pagination.value.rowsNumber = eventsStore.meta.itemCount
+  }
+
+  loading.value = false
 }
+
+onMounted(() => {
+  onRequest({
+    pagination: pagination.value,
+    filter: filter.value,
+  })
+})
 
 const deleteEventConfirm = async (eventId: number): Promise<void> => {
   const eventToDelete = eventsStore.events.find((event) => event.id === eventId)
@@ -132,16 +163,17 @@ const deleteEventConfirm = async (eventId: number): Promise<void> => {
 }
 
 const columns = [
-  { name: 'name', label: 'name', field: 'name', align: 'left' },
+  { name: 'name', label: 'name', field: 'name', align: 'left', sortable: true },
   {
     name: 'description',
     label: 'description',
     field: 'description',
     align: 'center',
+    sortable: true,
     style: 'max-width: 200px',
   },
-  { name: 'type', label: 'type', field: 'type', align: 'center' },
-  { name: 'priority', label: 'priority', field: 'priority', align: 'center' },
+  { name: 'type', label: 'type', field: 'type', align: 'center', sortable: true },
+  { name: 'priority', label: 'priority', field: 'priority', align: 'center', sortable: true },
   { name: 'id', label: '', field: 'id', align: 'right' },
 ]
 
