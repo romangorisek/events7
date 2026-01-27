@@ -47,7 +47,7 @@ onMounted(() => {
   }
 })
 
-const onSubmit = () => {
+const onSubmit = async () => {
   if (formData.value.id && formData.value.type && formData.value.priority !== null) {
     const updatedEvent: AnalyticsEvent = {
       id: formData.value.id,
@@ -56,12 +56,19 @@ const onSubmit = () => {
       type: formData.value.type.value,
       priority: formData.value.priority,
     }
-    eventsStore.updateEvent(updatedEvent)
-    $q.notify({
-      type: 'positive',
-      message: 'Event updated successfully',
-    })
-    router.back()
+    try {
+      await eventsStore.updateEvent(updatedEvent)
+      $q.notify({
+        type: 'positive',
+        message: 'Event updated successfully',
+      })
+      router.back()
+    } catch {
+      $q.notify({
+        type: 'negative',
+        message: 'Event could not be updated',
+      })
+    }
   }
 }
 

@@ -28,20 +28,27 @@ const getInitialFormData = () => ({
 
 const formData = ref(getInitialFormData())
 
-const onSubmit = () => {
+const onSubmit = async (): Promise<void> => {
   if (formData.value.type && formData.value.priority !== null) {
-    eventsStore.createEvent({
-      name: formData.value.name,
-      description: formData.value.description,
-      type: formData.value.type.value,
-      priority: formData.value.priority,
-    })
-    $q.notify({
-      type: 'positive',
-      message: 'Event created successfully',
-    })
-    formData.value = getInitialFormData()
-    router.back()
+    try {
+      await eventsStore.createEvent({
+        name: formData.value.name,
+        description: formData.value.description,
+        type: formData.value.type.value,
+        priority: formData.value.priority,
+      })
+      $q.notify({
+        type: 'positive',
+        message: 'Event created successfully',
+      })
+      formData.value = getInitialFormData()
+      router.back()
+    } catch {
+      $q.notify({
+        type: 'negative',
+        message: `Event could not be created.`,
+      })
+    }
   }
 }
 

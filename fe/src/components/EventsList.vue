@@ -89,13 +89,23 @@ const $q = useQuasar()
 
 const pageTitle = computed(() => route.meta.title)
 
+const loading = ref(false)
+
 const filter = ref('')
 
 if (!eventsStore.events.length) {
-  eventsStore.fetchEvents()
+  loading.value = true
+  eventsStore.fetchEvents().catch(() => {
+    $q.notify({
+      type: 'negative',
+      message: `Cannot load event data.`,
+    })
+  }).finally(() => {
+    loading.value = false
+  })
 }
 
-const deleteEventConfirm = (eventId: string): void => {
+const deleteEventConfirm = async (eventId: string): Promise<void> => {
   const eventToDelete = eventsStore.events.find((event) => event.id === eventId)
 
   if (eventToDelete) {
@@ -104,8 +114,19 @@ const deleteEventConfirm = (eventId: string): void => {
       message: `Are you sure you want to delete the event "${eventToDelete.name}"?`,
       cancel: true,
       persistent: true,
-    }).onOk(() => {
-      eventsStore.deleteEvent(eventId)
+    }).onOk(async () => {
+      try {
+        await eventsStore.deleteEvent(eventId)
+        $q.notify({
+          type: 'positive',
+          message: `Event deleted.`,
+        })
+      } catch {
+        $q.notify({
+          type: 'negative',
+          message: `Event could not be deleted.`,
+        })
+      }
     })
   }
 }

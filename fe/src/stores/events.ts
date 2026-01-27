@@ -2,68 +2,81 @@ import type { NewAnalyticsEvent, AnalyticsEvent } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+
 export const useEventsStore = defineStore('events', () => {
   const events = ref<AnalyticsEvent[]>([])
 
-  function fetchEvents() {
-    events.value = [
-      {
-        id: 'uuid1',
-        name: 'click-event',
-        type: 'crosspromo',
-        description: 'this is just some dummy description',
-        priority: 1,
-      },
-      {
-        id: 'uuid2',
-        name: 'open-event',
-        type: 'liveops',
-        description:
-          'bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-        priority: 4,
-      },
-      {
-        id: 'uuid3',
-        name: 'ack-event',
-        type: 'app',
-        description: 'bla bla bla bla bla bla bla',
-        priority: 7,
-      },
-      {
-        id: 'uuid4',
-        name: 'click-event',
-        type: 'ads',
-        description: 'bla bla bla bla bla bla bla',
-        priority: 8,
-      },
-      {
-        id: 'uuid5',
-        name: 'click-event',
-        type: 'app',
-        description: 'bla bla bla bla bla bla bla',
-        priority: 10,
-      },
-    ]
-  }
-
-  function createEvent(event: NewAnalyticsEvent): void {
-    const data = {
-      id: crypto.randomUUID(),
-      ...event,
+  async function fetchEvents() {
+    try {
+      const response = await fetch(`${backendUrl}/events`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch events')
+      }
+      const res = await response.json()
+      events.value = res.data
+    } catch (error) {
+      console.error('Error fetching events:', error)
+      throw new Error('Failed to fetch events')
     }
-
-    events.value.push(data)
   }
 
-  function updateEvent(newEvent: AnalyticsEvent): void {
-    events.value = events.value.map((e) => {
-      if (e.id === newEvent.id) return newEvent
-      return e
-    })
+  async function createEvent(event: NewAnalyticsEvent): Promise<void> {
+    try {
+      const response = await fetch(`${backendUrl}/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to create event')
+      }
+      const res = await response.json()
+      events.value.push(res)
+    } catch (error) {
+      console.error('Error creating event:', error)
+      throw new Error('Failed to create event')
+    }
   }
 
-  function deleteEvent(eventId: string): void {
-    events.value = events.value.filter((e) => e.id !== eventId)
+  async function updateEvent(event: AnalyticsEvent): Promise<void> {
+    try {
+      const response = await fetch(`${backendUrl}/events/${event.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to update event')
+      }
+      const data = await response.json()
+      events.value = events.value.map((e) => {
+        if (e.id === data.id) return data
+        return e
+      })
+    } catch (error) {
+      console.error('Error updating event:', error)
+      throw new Error('Failed to update event')
+    }
+  }
+
+  async function deleteEvent(eventId: string): Promise<void> {
+    try {
+      const response = await fetch(`${backendUrl}/events/${eventId}`, {
+        method: 'DELETE',
+      })
+      if (!response.ok) {
+        throw new Error('Failed to delete event')
+      }
+      events.value = events.value.filter((e) => e.id !== eventId)
+    } catch (error) {
+      console.error('Error deleting event:', error)
+      throw new Error('Failed to delete event')
+    }
   }
 
   const typeOptions = [
