@@ -51,9 +51,9 @@
           />
         </div>
 
-        <div>
+        <div class="row justify-end q-gutter-sm">
+          <q-btn label="Cancel" color="primary" flat @click="onCancel" />
           <q-btn label="Submit" type="submit" color="primary" />
-          <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="onCancel" />
         </div>
       </q-form>
     </div>
@@ -93,13 +93,20 @@ const onSubmit = () => {
 }
 
 const onCancel = () => {
-  formData.value = {
-    name: '',
-    description: '',
-    type: null,
-    priority: null,
-  }
-  router.back()
+  $q.dialog({
+    title: 'Confirm',
+    message: 'Are you sure you want to cancel? All unsaved data will be lost.',
+    cancel: true,
+    persistent: true,
+  }).onOk(() => {
+    formData.value = {
+      name: '',
+      description: '',
+      type: null,
+      priority: null,
+    }
+    router.back()
+  })
 }
 </script>
 
