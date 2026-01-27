@@ -54,7 +54,7 @@
       <template v-slot:body-cell-id="props">
         <q-td :props="props" class="text-right">
           <q-btn
-            :to="{ name: 'eventsUpdate', params: { id: props.value } }"
+            :to="{ name: 'eventsUpdate', params: { id: Number(props.value) } }"
             flat
             dense
             round
@@ -63,7 +63,7 @@
             class="q-mx-xs border-btn"
           />
           <q-btn
-            @click="deleteEventConfirm(props.value)"
+            @click="deleteEventConfirm(Number(props.value))"
             flat
             dense
             round
@@ -105,7 +105,7 @@ if (!eventsStore.events.length) {
   })
 }
 
-const deleteEventConfirm = async (eventId: string): Promise<void> => {
+const deleteEventConfirm = async (eventId: number): Promise<void> => {
   const eventToDelete = eventsStore.events.find((event) => event.id === eventId)
 
   if (eventToDelete) {

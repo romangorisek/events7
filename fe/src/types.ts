@@ -1,5 +1,5 @@
 export interface AnalyticsEvent {
-  id: string
+  id: number
   name: string
   description: string
   type: AnalyticsEventType

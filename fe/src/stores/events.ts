@@ -41,14 +41,14 @@ export const useEventsStore = defineStore('events', () => {
     }
   }
 
-  async function updateEvent(event: AnalyticsEvent): Promise<void> {
+  async function updateEvent(updatedEvent: AnalyticsEvent): Promise<void> {
     try {
-      const response = await fetch(`${backendUrl}/events/${event.id}`, {
+      const response = await fetch(`${backendUrl}/events/${updatedEvent.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(event),
+        body: JSON.stringify(updatedEvent),
       })
       if (!response.ok) {
         throw new Error('Failed to update event')
@@ -64,7 +64,7 @@ export const useEventsStore = defineStore('events', () => {
     }
   }
 
-  async function deleteEvent(eventId: string): Promise<void> {
+  async function deleteEvent(eventId: number): Promise<void> {
     try {
       const response = await fetch(`${backendUrl}/events/${eventId}`, {
         method: 'DELETE',

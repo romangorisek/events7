@@ -23,6 +23,7 @@ const router = createRouter({
       path: '/events/:id',
       name: 'eventsUpdate',
       component: EventsUpdate,
+      props: (route) => ({ id: Number(route.params.id) }),
       meta: { title: 'Update event' },
     },
   ],

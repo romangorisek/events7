@@ -21,9 +21,10 @@ const router = useRouter()
 const route = useRoute()
 const eventsStore = useEventsStore()
 
-const eventId = String(route.params.id)
+const eventId = Number(route.params.id)
 
 const formData = ref({
+  id: null as number | null,
   name: '',
   description: '',
   type: null as { label: string; value: string } | null,
