@@ -53,7 +53,7 @@
 
         <div class="row justify-end q-gutter-sm">
           <q-btn label="Cancel" color="primary" flat @click="onCancel" />
-          <q-btn label="Submit" type="submit" color="primary" />
+          <q-btn outline label="Submit" type="submit" color="primary" />
         </div>
       </q-form>
     </div>
@@ -109,10 +109,3 @@ const onCancel = () => {
   })
 }
 </script>
-
-<style scoped>
-/* To match the exact blue of your "NEW EVENT" button */
-.text-primary {
-  color: #1976d2 !important;
-}
-</style>
