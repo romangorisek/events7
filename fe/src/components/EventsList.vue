@@ -80,10 +80,12 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import { ref, computed } from 'vue'
+import { useQuasar } from 'quasar'
 import { useEventsStore } from '@/stores/events'
 
 const route = useRoute()
 const eventsStore = useEventsStore()
+const $q = useQuasar()
 
 const pageTitle = computed(() => route.meta.title)
 
@@ -94,10 +96,18 @@ if (!eventsStore.events.length) {
 }
 
 const deleteEventConfirm = (eventId: string): void => {
-  console.log('should show the confirm popup ' + eventId)
+  const eventToDelete = eventsStore.events.find((event) => event.id === eventId)
 
-  // this should be called after confim! ...
-  eventsStore.deleteEvent(eventId)
+  if (eventToDelete) {
+    $q.dialog({
+      title: 'Confirm Deletion',
+      message: `Are you sure you want to delete the event "${eventToDelete.name}"?`,
+      cancel: true,
+      persistent: true,
+    }).onOk(() => {
+      eventsStore.deleteEvent(eventId)
+    })
+  }
 }
 
 const columns = [
