@@ -129,9 +129,17 @@ async function onRequest(props) {
 }
 
 onMounted(() => {
-  onRequest({
-    pagination: pagination.value,
-    filter: filter.value,
+  Promise.all([
+    eventsStore.fetchTypeOptions(),
+    onRequest({
+      pagination: pagination.value,
+      filter: filter.value,
+    }),
+  ]).catch(() => {
+    $q.notify({
+      type: 'negative',
+      message: `Event data could not be loaded.`,
+    })
   })
 })
 

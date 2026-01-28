@@ -4,6 +4,7 @@ import type {
   PageDto,
   PageMetaDto,
   PageOptionsDto,
+  EventType,
 } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -12,6 +13,7 @@ import { api } from '@/lib/api'
 export const useEventsStore = defineStore('events', () => {
   const events = ref<AnalyticsEvent[]>([])
   const meta = ref<PageMetaDto>()
+  const typeOptions = ref<EventType[]>([])
 
   async function fetchEvents(options: PageOptionsDto) {
     const params = new URLSearchParams()
@@ -93,12 +95,18 @@ export const useEventsStore = defineStore('events', () => {
     }
   }
 
-  const typeOptions = [
-    { label: 'crosspromo', value: 'crosspromo', color: 'grey-6' },
-    { label: 'liveops', value: 'liveops', color: 'green' },
-    { label: 'app', value: 'app', color: 'yellow' },
-    { label: 'ads', value: 'ads', color: 'red' },
-  ]
+  async function fetchTypeOptions() {
+    try {
+      const response = await api('/event-types')
+      if (!response.ok) {
+        throw new Error('Failed to fetch event types')
+      }
+      typeOptions.value = await response.json()
+    } catch (error) {
+      console.error('Error fetching event types:', error)
+      throw new Error('Failed to fetch event types')
+    }
+  }
 
   const priorityOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -111,5 +119,6 @@ export const useEventsStore = defineStore('events', () => {
     deleteEvent,
     typeOptions,
     priorityOptions,
+    fetchTypeOptions,
   }
 })
