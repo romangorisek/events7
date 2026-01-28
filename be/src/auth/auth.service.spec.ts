@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
+import { IpApiService } from '../ip-api/ip-api.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -13,6 +14,12 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: {
             sign: jest.fn(() => 'test_token'),
+          },
+        },
+        {
+          provide: IpApiService,
+          useValue: {
+            getCountryCode: jest.fn(),
           },
         },
       ],

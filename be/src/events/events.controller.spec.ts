@@ -7,15 +7,16 @@ import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { PageOptionsDto } from '../common/dto/page-options.dto';
+import { AdsPermissionService } from '../ads-permission/ads-permission.service';
 
 describe('EventsController', () => {
   let controller: EventsController;
 
   const mockEventsService = {
-    create: jest.fn((dto) => ({ id: 1, ...dto })),
+    create: jest.fn((dto) => Promise.resolve({ id: 1, ...dto })),
     findAll: jest.fn(() => ({ data: [], meta: {} })),
     findOne: jest.fn((id) => ({ id, name: 'Test Event' })),
-    update: jest.fn((id, dto) => ({ id, ...dto })),
+    update: jest.fn((id, dto) => Promise.resolve({ id, ...dto })),
     remove: jest.fn((id) => ({ id })),
   };
 
@@ -27,6 +28,12 @@ describe('EventsController', () => {
           provide: EventsService,
           useValue: mockEventsService,
         },
+        {
+          provide: AdsPermissionService,
+          useValue: {
+            getAdsPermission: jest.fn().mockResolvedValue({ adsAllowed: true }),
+          },
+        },
       ],
     }).compile();
 
@@ -37,14 +44,17 @@ describe('EventsController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should create an event', () => {
+  it('should create an event', async () => {
     const dto: CreateEventDto = {
       name: 'Test',
       description: 'Test desc',
       type: 'app',
       priority: 1,
     };
-    expect(controller.create(dto)).toEqual({ id: 1, ...dto });
+    expect(await controller.create(dto, { user: {} } as any)).toEqual({
+      id: 1,
+      ...dto,
+    });
     expect(mockEventsService.create).toHaveBeenCalledWith(dto);
   });
 
@@ -60,10 +70,13 @@ describe('EventsController', () => {
     expect(mockEventsService.findOne).toHaveBeenCalledWith(+id);
   });
 
-  it('should update an event', () => {
+  it('should update an event', async () => {
     const id = '1';
     const dto: UpdateEventDto = { name: 'Updated' };
-    controller.update(id, dto);
+    expect(await controller.update(id, dto, { user: {} } as any)).toEqual({
+      id: 1,
+      ...dto,
+    });
     expect(mockEventsService.update).toHaveBeenCalledWith(+id, dto);
   });
 
