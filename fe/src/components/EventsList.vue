@@ -50,6 +50,7 @@
             icon="edit"
             color="grey-7"
             class="q-mx-xs border-btn"
+            data-testid="edit-button"
           />
           <q-btn
             @click="deleteEventConfirm(Number(props.value))"
@@ -59,6 +60,7 @@
             icon="delete_outline"
             color="grey-7"
             class="q-mx-xs border-btn"
+            data-testid="delete-button"
           />
         </q-td>
       </template>

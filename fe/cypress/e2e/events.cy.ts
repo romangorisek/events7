@@ -2,11 +2,14 @@
 
 describe('Events CRUD', () => {
   it('should allow creating, reading, updating, and deleting events', () => {
-    // Visit the events page
+    cy.intercept('GET', '/event-types', { fixture: 'event-types.json' }).as('getEventTypes')
+
     cy.visit('/events')
+    cy.wait('@getEventTypes')
 
     // Create a new event
     cy.get('.q-btn').contains('New event').click()
+    cy.url().should('include', '/events/new')
 
     const eventName = `Test Event ${Date.now()}`
 
@@ -28,7 +31,7 @@ describe('Events CRUD', () => {
     cy.contains(eventName).should('be.visible')
 
     // Update the event
-    cy.contains(eventName).parent().find('.q-btn').contains('edit').click()
+    cy.contains(eventName).parent().find('[data-testid="edit-button"]').click()
 
     const updatedEventName = `${eventName} - Updated`
     cy.get('[data-testid="input-name"]').clear()
@@ -48,7 +51,7 @@ describe('Events CRUD', () => {
     cy.contains(updatedEventName).should('be.visible')
 
     // Delete the event
-    cy.contains(updatedEventName).parent().find('.q-btn').contains('delete').click()
+    cy.contains(updatedEventName).parent().find('[data-testid="delete-button"]').click()
 
     cy.get('.q-dialog').find('.q-btn').contains('OK').click()
 
