@@ -1,16 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { AdsPermissionService } from '../ads-permission/ads-permission.service';
 
 @Injectable()
 export class EventTypesService {
-  findAll() {
+  constructor(private readonly adsPermissionService: AdsPermissionService) {}
+  async findAll(countryCode: string) {
     const eventTypes = [
       { label: 'crosspromo', value: 'crosspromo', color: 'grey-6' },
       { label: 'liveops', value: 'liveops', color: 'green' },
       { label: 'app', value: 'app', color: 'yellow' },
     ];
 
-    const hasAdsPermission = false;
-    if (hasAdsPermission) {
+    const { adsAlowed } =
+      await this.adsPermissionService.getAdsPermission(countryCode);
+
+    if (adsAlowed) {
       eventTypes.push({ label: 'ads', value: 'ads', color: 'red' });
     }
 
