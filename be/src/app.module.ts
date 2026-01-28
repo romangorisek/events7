@@ -5,6 +5,7 @@ import { EventsModule } from './events/events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { EventTypesModule } from './event-types/event-types.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
         db.pragma('synchronous = NORMAL');
       },
     }),
+    EventTypesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
