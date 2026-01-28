@@ -7,6 +7,7 @@
         dense
         lazy-rules="ondemand"
         v-model="model.name"
+        data-testid="input-name"
         :rules="[(val) => (val && val.length > 0) || 'Value is required']"
       />
     </div>
@@ -19,6 +20,7 @@
         lazy-rules="ondemand"
         type="textarea"
         v-model="model.description"
+        data-testid="input-description"
         :rules="[(val) => (val && val.length > 0) || 'Value is required']"
       />
     </div>
@@ -30,6 +32,7 @@
         dense
         lazy-rules="ondemand"
         v-model="model.type"
+        data-testid="input-type"
         :options="eventsStore.typeOptions"
         :rules="[(val) => val !== null || 'Value is required']"
       />
@@ -42,6 +45,7 @@
         dense
         lazy-rules="ondemand"
         v-model="model.priority"
+        data-testid="input-priority"
         :options="eventsStore.priorityOptions"
         :rules="[(val) => val !== null || 'Value is required']"
       />

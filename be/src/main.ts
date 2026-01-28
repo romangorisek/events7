@@ -9,7 +9,7 @@ async function bootstrap() {
   app.use(helmet());
 
   app.enableCors({
-    origin: 'http://localhost:5173', // Allow requests from your frontend's origin
+    origin: ['http://localhost:5173', 'http://localhost:4173'], // Allow requests from your frontend's origin and test environment
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
