@@ -56,10 +56,11 @@
 
 <script lang="ts" setup>
 import { useEventsStore } from '@/stores/events'
+import type { AnalyticsEventForm } from '@/types'
 
 const eventsStore = useEventsStore()
 
-const model = defineModel({ required: true })
+const model = defineModel<AnalyticsEventForm>({ required: true })
 
 const emit = defineEmits(['submit', 'cancel'])
 </script>

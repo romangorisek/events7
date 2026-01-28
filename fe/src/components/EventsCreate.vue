@@ -14,12 +14,13 @@ import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { useEventsStore } from '@/stores/events'
 import EventsForm from './EventsForm.vue'
+import type { AnalyticsEventForm } from '@/types'
 
 const $q = useQuasar()
 const router = useRouter()
 const eventsStore = useEventsStore()
 
-const getInitialFormData = () => ({
+const getInitialFormData = (): AnalyticsEventForm => ({
   name: '',
   description: '',
   type: null,

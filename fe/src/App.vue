@@ -47,7 +47,14 @@ import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
 
-const menuList = [
+interface MenuItem {
+  icon: string
+  label: string
+  link: string
+  separator?: boolean
+}
+
+const menuList: MenuItem[] = [
   {
     icon: 'touch_app',
     label: 'Events',

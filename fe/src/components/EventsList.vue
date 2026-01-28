@@ -70,6 +70,7 @@
 import { useRoute } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
+import type { QTableProps } from 'quasar'
 import { useEventsStore } from '@/stores/events'
 import { Order } from '@/types'
 
@@ -89,7 +90,32 @@ const pagination = ref({
   rowsNumber: 10,
 })
 
-async function onRequest(props) {
+const columns: QTableProps['columns'] = [
+  { name: 'name', label: 'name', field: 'name', align: 'left', sortable: true },
+  {
+    name: 'description',
+    label: 'description',
+    field: 'description',
+    align: 'center',
+    sortable: true,
+    style: 'max-width: 200px',
+  },
+  { name: 'type', label: 'type', field: 'type', align: 'center', sortable: true },
+  { name: 'priority', label: 'priority', field: 'priority', align: 'center', sortable: true },
+  { name: 'id', label: '', field: 'id', align: 'right' },
+]
+
+interface OnRequestProps {
+  pagination: {
+    sortBy: string
+    descending: boolean
+    page: number
+    rowsPerPage: number
+  }
+  filter?: string
+}
+
+async function onRequest(props: OnRequestProps) {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   const filter = props.filter
 
@@ -154,18 +180,4 @@ const deleteEventConfirm = async (eventId: number): Promise<void> => {
   }
 }
 
-const columns = [
-  { name: 'name', label: 'name', field: 'name', align: 'left', sortable: true },
-  {
-    name: 'description',
-    label: 'description',
-    field: 'description',
-    align: 'center',
-    sortable: true,
-    style: 'max-width: 200px',
-  },
-  { name: 'type', label: 'type', field: 'type', align: 'center', sortable: true },
-  { name: 'priority', label: 'priority', field: 'priority', align: 'center', sortable: true },
-  { name: 'id', label: '', field: 'id', align: 'right' },
-]
 </script>

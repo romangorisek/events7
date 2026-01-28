@@ -14,7 +14,7 @@ import { useQuasar } from 'quasar'
 import { useRouter, useRoute } from 'vue-router'
 import { useEventsStore } from '@/stores/events'
 import EventsForm from './EventsForm.vue'
-import { AnalyticsEvent } from '@/types'
+import type { AnalyticsEvent, AnalyticsEventType, AnalyticsEventPriority } from '@/types'
 
 const $q = useQuasar()
 const router = useRouter()
@@ -23,12 +23,18 @@ const eventsStore = useEventsStore()
 
 const eventId = Number(route.params.id)
 
-const formData = ref({
-  id: null as number | null,
+const formData = ref<{
+  id: number | null
+  name: string
+  description: string
+  type: AnalyticsEventType | null
+  priority: AnalyticsEventPriority | null
+}>({
+  id: null,
   name: '',
   description: '',
-  type: null as string | null,
-  priority: null as number | null,
+  type: null,
+  priority: null,
 })
 
 onMounted(() => {

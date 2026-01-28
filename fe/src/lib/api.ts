@@ -5,13 +5,11 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
 export async function api(url: string, options: RequestInit = {}): Promise<Response> {
   const authStore = useAuthStore()
 
-  const defaultHeaders: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  }
+  const defaultHeaders = new Headers(options.headers)
+  defaultHeaders.set('Content-Type', 'application/json')
 
   if (authStore.token) {
-    defaultHeaders['Authorization'] = `Bearer ${authStore.token}`
+    defaultHeaders.set('Authorization', `Bearer ${authStore.token}`)
   }
 
   let response = await fetch(`${backendUrl}${url}`, {
@@ -24,7 +22,7 @@ export async function api(url: string, options: RequestInit = {}): Promise<Respo
       await authStore.login()
       // update header with new token
       if (authStore.token) {
-        defaultHeaders['Authorization'] = `Bearer ${authStore.token}`
+        defaultHeaders.set('Authorization', `Bearer ${authStore.token}`)
       }
       // retry the request
       response = await fetch(`${backendUrl}${url}`, {
