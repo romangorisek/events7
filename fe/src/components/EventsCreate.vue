@@ -34,7 +34,7 @@ const onSubmit = async (): Promise<void> => {
       await eventsStore.createEvent({
         name: formData.value.name,
         description: formData.value.description,
-        type: formData.value.type.value,
+        type: formData.value.type,
         priority: formData.value.priority,
       })
       $q.notify({

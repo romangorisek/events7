@@ -27,7 +27,7 @@ const formData = ref({
   id: null as number | null,
   name: '',
   description: '',
-  type: null as { label: string; value: string } | null,
+  type: null as string | null,
   priority: null as number | null,
 })
 
@@ -37,7 +37,7 @@ onMounted(() => {
     formData.value.id = eventToUpdate.id
     formData.value.name = eventToUpdate.name
     formData.value.description = eventToUpdate.description
-    formData.value.type = { label: eventToUpdate.type, value: eventToUpdate.type }
+    formData.value.type = eventToUpdate.type
     formData.value.priority = eventToUpdate.priority
   } else {
     $q.notify({
@@ -54,7 +54,7 @@ const onSubmit = async () => {
       id: formData.value.id,
       name: formData.value.name,
       description: formData.value.description,
-      type: formData.value.type.value,
+      type: formData.value.type,
       priority: formData.value.priority,
     }
     try {

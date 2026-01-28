@@ -4,7 +4,7 @@ import type {
   PageDto,
   PageMetaDto,
   PageOptionsDto,
-  EventType,
+  AnalyticsEventType,
 } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -13,7 +13,7 @@ import { api } from '@/lib/api'
 export const useEventsStore = defineStore('events', () => {
   const events = ref<AnalyticsEvent[]>([])
   const meta = ref<PageMetaDto>()
-  const typeOptions = ref<EventType[]>([])
+  const typeOptions = ref<AnalyticsEventType[]>([])
 
   async function fetchEvents(options: PageOptionsDto) {
     const params = new URLSearchParams()

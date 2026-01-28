@@ -40,20 +40,6 @@
         </q-td>
       </template>
 
-      <template v-slot:body-cell-type="props">
-        <q-td :props="props">
-          <div class="row items-center no-wrap">
-            <q-badge
-              rounded
-              :color="getTypeColor(props.value)"
-              class="q-mr-sm"
-              style="width: 12px; height: 8px; padding: 0"
-            />
-            {{ props.value }}
-          </div>
-        </q-td>
-      </template>
-
       <template v-slot:body-cell-id="props">
         <q-td :props="props" class="text-right">
           <q-btn
@@ -130,7 +116,6 @@ async function onRequest(props) {
 
 onMounted(() => {
   Promise.all([
-    eventsStore.fetchTypeOptions(),
     onRequest({
       pagination: pagination.value,
       filter: filter.value,
@@ -184,11 +169,4 @@ const columns = [
   { name: 'id', label: '', field: 'id', align: 'right' },
 ]
 
-const getTypeColor = (type) => {
-  if (type === 'liveops') return 'green'
-  if (type === 'cosspromo') return 'grey-9'
-  if (type === 'ads') return 'red'
-  if (type === 'app') return 'yellow'
-  return 'grey'
-}
 </script>
