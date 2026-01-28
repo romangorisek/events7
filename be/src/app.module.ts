@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { EventTypesModule } from './event-types/event-types.module';
+import { AdsPermissionModule } from './ads-permission/ads-permission.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EventTypesModule } from './event-types/event-types.module';
       },
     }),
     EventTypesModule,
+    AdsPermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
