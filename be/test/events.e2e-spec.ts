@@ -1,0 +1,137 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import request from 'supertest';
+import { AppModule } from './../src/app.module';
+import { CreateEventDto } from '../src/events/dto/create-event.dto';
+import { UpdateEventDto } from '../src/events/dto/update-event.dto';
+
+describe('EventsController (e2e)', () => {
+  let app: INestApplication;
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ transform: true }));
+    await app.init();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('/events (POST)', async () => {
+    const createEventDto: CreateEventDto = {
+      name: 'Test Event',
+      description: 'Test Description',
+      type: 'app',
+      priority: 1,
+    };
+
+    return request(app.getHttpServer())
+      .post('/events')
+      .send(createEventDto)
+      .expect(201)
+      .then((response) => {
+        expect(response.body).toEqual({
+          id: expect.any(Number),
+          ...createEventDto,
+        });
+      });
+  });
+
+  it('/events (GET)', async () => {
+    const createEventDto: CreateEventDto = {
+      name: 'Test Event',
+      description: 'Test Description',
+      type: 'app',
+      priority: 1,
+    };
+    await request(app.getHttpServer()).post('/events').send(createEventDto);
+
+    return request(app.getHttpServer())
+      .get('/events')
+      .expect(200)
+      .then((response) => {
+        expect(response.body.data).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              id: expect.any(Number),
+              ...createEventDto,
+            }),
+          ]),
+        );
+      });
+  });
+
+  it('/events/:id (GET)', async () => {
+    const createEventDto: CreateEventDto = {
+      name: 'Test Event',
+      description: 'Test Description',
+      type: 'app',
+      priority: 1,
+    };
+    const postResponse = await request(app.getHttpServer())
+      .post('/events')
+      .send(createEventDto);
+    const eventId = postResponse.body.id;
+
+    return request(app.getHttpServer())
+      .get(`/events/${eventId}`)
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toEqual({
+          id: eventId,
+          ...createEventDto,
+        });
+      });
+  });
+
+  it('/events/:id (PATCH)', async () => {
+    const createEventDto: CreateEventDto = {
+      name: 'Test Event',
+      description: 'Test Description',
+      type: 'app',
+      priority: 1,
+    };
+    const postResponse = await request(app.getHttpServer())
+      .post('/events')
+      .send(createEventDto);
+    const eventId = postResponse.body.id;
+
+    const updateEventDto: UpdateEventDto = { name: 'Updated Name' };
+
+    return request(app.getHttpServer())
+      .patch(`/events/${eventId}`)
+      .send(updateEventDto)
+      .expect(200)
+      .then(async () => {
+        const getResponse = await request(app.getHttpServer()).get(
+          `/events/${eventId}`,
+        );
+        expect(getResponse.body.name).toEqual(updateEventDto.name);
+      });
+  });
+
+  it('/events/:id (DELETE)', async () => {
+    const createEventDto: CreateEventDto = {
+      name: 'Test Event',
+      description: 'Test Description',
+      type: 'app',
+      priority: 1,
+    };
+    const postResponse = await request(app.getHttpServer())
+      .post('/events')
+      .send(createEventDto);
+    const eventId = postResponse.body.id;
+
+    await request(app.getHttpServer()).delete(`/events/${eventId}`).expect(200);
+
+    return request(app.getHttpServer()).get(`/events/${eventId}`).expect(404);
+  });
+});

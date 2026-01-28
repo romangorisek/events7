@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -52,8 +52,12 @@ export class EventsService {
     return new PageDto(entities, pageMetaDto);
   }
 
-  findOne(id: number) {
-    return this.eventRepository.findOneBy({ id });
+  async findOne(id: number) {
+    const event = await this.eventRepository.findOneBy({ id });
+    if (!event) {
+      throw new NotFoundException(`Event #${id} not found`);
+    }
+    return event;
   }
 
   update(id: number, updateEventDto: UpdateEventDto) {
