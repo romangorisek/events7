@@ -12,6 +12,13 @@ describe('EventsController (e2e)', () => {
   let app: INestApplication;
   let jwtToken: string;
 
+  const createEventDto: CreateEventDto = {
+    name: 'Test Event',
+    description: 'Test Description',
+    type: 'app',
+    priority: 1,
+  };
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -32,13 +39,6 @@ describe('EventsController (e2e)', () => {
   });
 
   it('/events (POST)', async () => {
-    const createEventDto: CreateEventDto = {
-      name: 'Test Event',
-      description: 'Test Description',
-      type: 'app',
-      priority: 1,
-    };
-
     return request(app.getHttpServer())
       .post('/events')
       .set('Authorization', `Bearer ${jwtToken}`)
@@ -53,12 +53,6 @@ describe('EventsController (e2e)', () => {
   });
 
   it('/events (GET)', async () => {
-    const createEventDto: CreateEventDto = {
-      name: 'Test Event',
-      description: 'Test Description',
-      type: 'app',
-      priority: 1,
-    };
     await request(app.getHttpServer())
       .post('/events')
       .set('Authorization', `Bearer ${jwtToken}`)
@@ -81,12 +75,6 @@ describe('EventsController (e2e)', () => {
   });
 
   it('/events/:id (GET)', async () => {
-    const createEventDto: CreateEventDto = {
-      name: 'Test Event',
-      description: 'Test Description',
-      type: 'app',
-      priority: 1,
-    };
     const postResponse = await request(app.getHttpServer())
       .post('/events')
       .set('Authorization', `Bearer ${jwtToken}`)
@@ -106,12 +94,6 @@ describe('EventsController (e2e)', () => {
   });
 
   it('/events/:id (PATCH)', async () => {
-    const createEventDto: CreateEventDto = {
-      name: 'Test Event',
-      description: 'Test Description',
-      type: 'app',
-      priority: 1,
-    };
     const postResponse = await request(app.getHttpServer())
       .post('/events')
       .set('Authorization', `Bearer ${jwtToken}`)
@@ -134,12 +116,6 @@ describe('EventsController (e2e)', () => {
   });
 
   it('/events/:id (DELETE)', async () => {
-    const createEventDto: CreateEventDto = {
-      name: 'Test Event',
-      description: 'Test Description',
-      type: 'app',
-      priority: 1,
-    };
     const postResponse = await request(app.getHttpServer())
       .post('/events')
       .set('Authorization', `Bearer ${jwtToken}`)
