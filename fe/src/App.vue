@@ -42,6 +42,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
+import { useEventsStore } from './stores/events'
 import { useQuasar } from 'quasar'
 
 const $q = useQuasar()
@@ -57,18 +58,20 @@ const menuList = [
 const drawer = ref(false)
 
 const authStore = useAuthStore()
+const eventsStore = useEventsStore()
 
-onMounted(() => {
+onMounted(async () => {
   if (!authStore.token) {
-    try {
-      // auto log in for the purpose of the example app; on a real app it would be connected to a login form
-      authStore.login()
-    } catch {
+    // auto log in for the purpose of the example app; on a real app it would be connected to a login form
+    await authStore.login().catch(() => {
       $q.notify({
         type: 'negative',
         message: `Login failed`, // should not happen in our example!
       })
-    }
+    })
   }
+
+  // load enums from BE that are needed for the app to run ok
+  await eventsStore.fetchTypeOptions()
 })
 </script>

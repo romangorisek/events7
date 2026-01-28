@@ -23,6 +23,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   validate(payload: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return { ip: payload.ip as string, countryCode: payload.countryCode as string };
+    return {
+      ip: payload.ip as string,
+      countryCode: payload.countryCode as string,
+    };
   }
 }
