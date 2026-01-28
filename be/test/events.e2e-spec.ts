@@ -10,6 +10,7 @@ import { UpdateEventDto } from '../src/events/dto/update-event.dto';
 
 describe('EventsController (e2e)', () => {
   let app: INestApplication;
+  let jwtToken: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -19,6 +20,11 @@ describe('EventsController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
     await app.init();
+
+    const loginResponse = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send();
+    jwtToken = loginResponse.body.access_token;
   });
 
   afterEach(async () => {
@@ -35,6 +41,7 @@ describe('EventsController (e2e)', () => {
 
     return request(app.getHttpServer())
       .post('/events')
+      .set('Authorization', `Bearer ${jwtToken}`)
       .send(createEventDto)
       .expect(201)
       .then((response) => {
@@ -52,10 +59,14 @@ describe('EventsController (e2e)', () => {
       type: 'app',
       priority: 1,
     };
-    await request(app.getHttpServer()).post('/events').send(createEventDto);
+    await request(app.getHttpServer())
+      .post('/events')
+      .set('Authorization', `Bearer ${jwtToken}`)
+      .send(createEventDto);
 
     return request(app.getHttpServer())
       .get('/events')
+      .set('Authorization', `Bearer ${jwtToken}`)
       .expect(200)
       .then((response) => {
         expect(response.body.data).toEqual(
@@ -78,11 +89,13 @@ describe('EventsController (e2e)', () => {
     };
     const postResponse = await request(app.getHttpServer())
       .post('/events')
+      .set('Authorization', `Bearer ${jwtToken}`)
       .send(createEventDto);
     const eventId = postResponse.body.id;
 
     return request(app.getHttpServer())
       .get(`/events/${eventId}`)
+      .set('Authorization', `Bearer ${jwtToken}`)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual({
@@ -101,6 +114,7 @@ describe('EventsController (e2e)', () => {
     };
     const postResponse = await request(app.getHttpServer())
       .post('/events')
+      .set('Authorization', `Bearer ${jwtToken}`)
       .send(createEventDto);
     const eventId = postResponse.body.id;
 
@@ -108,12 +122,13 @@ describe('EventsController (e2e)', () => {
 
     return request(app.getHttpServer())
       .patch(`/events/${eventId}`)
+      .set('Authorization', `Bearer ${jwtToken}`)
       .send(updateEventDto)
       .expect(200)
       .then(async () => {
-        const getResponse = await request(app.getHttpServer()).get(
-          `/events/${eventId}`,
-        );
+        const getResponse = await request(app.getHttpServer())
+          .get(`/events/${eventId}`)
+          .set('Authorization', `Bearer ${jwtToken}`);
         expect(getResponse.body.name).toEqual(updateEventDto.name);
       });
   });
@@ -127,11 +142,18 @@ describe('EventsController (e2e)', () => {
     };
     const postResponse = await request(app.getHttpServer())
       .post('/events')
+      .set('Authorization', `Bearer ${jwtToken}`)
       .send(createEventDto);
     const eventId = postResponse.body.id;
 
-    await request(app.getHttpServer()).delete(`/events/${eventId}`).expect(200);
+    await request(app.getHttpServer())
+      .delete(`/events/${eventId}`)
+      .set('Authorization', `Bearer ${jwtToken}`)
+      .expect(200);
 
-    return request(app.getHttpServer()).get(`/events/${eventId}`).expect(404);
+    return request(app.getHttpServer())
+      .get(`/events/${eventId}`)
+      .set('Authorization', `Bearer ${jwtToken}`)
+      .expect(404);
   });
 });
