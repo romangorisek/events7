@@ -168,5 +168,4 @@ const columns = [
   { name: 'priority', label: 'priority', field: 'priority', align: 'center', sortable: true },
   { name: 'id', label: '', field: 'id', align: 'right' },
 ]
-
 </script>
