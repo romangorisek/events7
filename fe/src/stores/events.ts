@@ -7,8 +7,7 @@ import type {
 } from '@/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'
+import { api } from '@/lib/api'
 
 export const useEventsStore = defineStore('events', () => {
   const events = ref<AnalyticsEvent[]>([])
@@ -23,7 +22,7 @@ export const useEventsStore = defineStore('events', () => {
     if (options.filter) params.append('filter', options.filter)
 
     try {
-      const response = await fetch(`${backendUrl}/events?${params.toString()}`)
+      const response = await api(`/events?${params.toString()}`)
       if (!response.ok) {
         throw new Error('Failed to fetch events')
       }
@@ -38,11 +37,8 @@ export const useEventsStore = defineStore('events', () => {
 
   async function createEvent(event: NewAnalyticsEvent): Promise<void> {
     try {
-      const response = await fetch(`${backendUrl}/events`, {
+      const response = await api('/events', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(event),
       })
       if (!response.ok) {
@@ -58,11 +54,8 @@ export const useEventsStore = defineStore('events', () => {
 
   async function updateEvent(updatedEvent: AnalyticsEvent): Promise<void> {
     try {
-      const response = await fetch(`${backendUrl}/events/${updatedEvent.id}`, {
+      const response = await api(`/events/${updatedEvent.id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(updatedEvent),
       })
       if (!response.ok) {
@@ -81,7 +74,7 @@ export const useEventsStore = defineStore('events', () => {
 
   async function deleteEvent(eventId: number): Promise<void> {
     try {
-      const response = await fetch(`${backendUrl}/events/${eventId}`, {
+      const response = await api(`/events/${eventId}`, {
         method: 'DELETE',
       })
       if (!response.ok) {

@@ -40,7 +40,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useAuthStore } from './stores/auth'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
 
 const menuList = [
   {
@@ -51,4 +55,20 @@ const menuList = [
 ]
 
 const drawer = ref(false)
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  if (!authStore.token) {
+    try {
+      // auto log in for the purpose of the example app; on a real app it would be connected to a login form
+      authStore.login()
+    } catch {
+      $q.notify({
+        type: 'negative',
+        message: `Login failed`, // should not happen in our example!
+      })
+    }
+  }
+})
 </script>

@@ -18,23 +18,23 @@ export enum Order {
 }
 
 export interface PageOptionsDto {
-  sortBy?: string;
-  page?: number;
-  take?: number;
-  order?: Order;
-  filter?: string;
+  sortBy?: string
+  page?: number
+  take?: number
+  order?: Order
+  filter?: string
 }
 
 export interface PageMetaDto {
-  readonly page: number;
-  readonly take: number;
-  readonly itemCount: number;
-  readonly pageCount: number;
-  readonly hasPreviousPage: boolean;
-  readonly hasNextPage: boolean;
+  readonly page: number
+  readonly take: number
+  readonly itemCount: number
+  readonly pageCount: number
+  readonly hasPreviousPage: boolean
+  readonly hasNextPage: boolean
 }
 
 export interface PageDto<T> {
-  readonly data: T[];
-  readonly meta: PageMetaDto;
+  readonly data: T[]
+  readonly meta: PageMetaDto
 }

@@ -104,7 +104,6 @@ const pagination = ref({
 })
 
 async function onRequest(props) {
-   console.log('what is this onRequest', props);
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   const filter = props.filter
 
