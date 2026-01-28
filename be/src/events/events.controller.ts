@@ -30,15 +30,10 @@ export class EventsController {
   @Post()
   async create(@Body() createEventDto: CreateEventDto, @Req() req: Request) {
     if (createEventDto.type === 'ads') {
-      const user = req.user as { countryCode: string };
-      const { adsAlowed } = await this.adsPermissionService.getAdsPermission(
-        user.countryCode,
+      await this.thowForbiddenIfAdsNotAllowed(
+        req.user as { countryCode: string },
+        'You are not allowed to create ads events',
       );
-      if (!adsAlowed) {
-        throw new ForbiddenException(
-          'You are not allowed to create ads events',
-        );
-      }
     }
 
     return this.eventsService.create(createEventDto);
@@ -61,15 +56,10 @@ export class EventsController {
     @Req() req: Request,
   ) {
     if (updateEventDto.type === 'ads') {
-      const user = req.user as { countryCode: string };
-      const { adsAlowed } = await this.adsPermissionService.getAdsPermission(
-        user.countryCode,
+      await this.thowForbiddenIfAdsNotAllowed(
+        req.user as { countryCode: string },
+        'You are not allowed to update events to ads',
       );
-      if (!adsAlowed) {
-        throw new ForbiddenException(
-          'You are not allowed to update events to ads',
-        );
-      }
     }
 
     return this.eventsService.update(+id, updateEventDto);
@@ -78,5 +68,17 @@ export class EventsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventsService.remove(+id);
+  }
+
+  private async thowForbiddenIfAdsNotAllowed(
+    user: { countryCode: string },
+    msg: string,
+  ): Promise<void> {
+    const { adsAllowed } = await this.adsPermissionService.getAdsPermission(
+      user.countryCode,
+    );
+    if (!adsAllowed) {
+      throw new ForbiddenException(msg);
+    }
   }
 }

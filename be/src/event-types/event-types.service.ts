@@ -11,10 +11,10 @@ export class EventTypesService {
       { label: 'app', value: 'app', color: 'yellow' },
     ];
 
-    const { adsAlowed } =
+    const { adsAllowed } =
       await this.adsPermissionService.getAdsPermission(countryCode);
 
-    if (adsAlowed) {
+    if (adsAllowed) {
       eventTypes.push({ label: 'ads', value: 'ads', color: 'red' });
     }
 

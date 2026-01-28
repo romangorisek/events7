@@ -10,7 +10,9 @@ export class AdsPermissionService {
     private readonly configService: ConfigService, // Inject ConfigService
   ) {}
 
-  async getAdsPermission(countryCode: string): Promise<{ adsAlowed: boolean }> {
+  async getAdsPermission(
+    countryCode: string,
+  ): Promise<{ adsAllowed: boolean }> {
     const username = this.configService.get<string>('ADS_PERMISSION_USERNAME');
     const password = this.configService.get<string>('ADS_PERMISSION_PASSWORD');
 
@@ -32,12 +34,12 @@ export class AdsPermissionService {
         }),
       );
 
-      return { adsAlowed: res.data.ads === 'sure, why not!' };
+      return { adsAllowed: res.data.ads === 'sure, why not!' };
     } catch {
       console.error(
         'getting ads permissions failed, returned false as default',
       );
-      return { adsAlowed: false };
+      return { adsAllowed: false };
     }
   }
 }
