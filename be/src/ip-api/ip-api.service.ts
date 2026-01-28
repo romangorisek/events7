@@ -1,9 +1,11 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class IpApiService {
+  private readonly logger = new Logger(IpApiService.name);
+
   constructor(private readonly httpService: HttpService) {}
 
   private NO_COUNTRY_CODE = 'N/A';
@@ -15,16 +17,17 @@ export class IpApiService {
         await firstValueFrom(this.httpService.get(url));
 
       if (res.data.status !== 'success') {
-        console.error(
+        this.logger.error(
           'Failed to get country code from IP, returning default value',
         );
         return this.NO_COUNTRY_CODE;
       }
 
       return res.data.countryCode;
-    } catch {
-      console.error(
+    } catch (error) {
+      this.logger.error(
         'Failed to get country code from IP, returning default value',
+        error.stack,
       );
       return this.NO_COUNTRY_CODE;
     }

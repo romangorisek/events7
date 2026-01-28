@@ -10,6 +10,7 @@ import {
   UseGuards,
   Req,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -22,6 +23,8 @@ import { AdsPermissionService } from '../ads-permission/ads-permission.service';
 @Controller('events')
 @UseGuards(JwtAuthGuard)
 export class EventsController {
+  private readonly logger = new Logger(EventsController.name);
+
   constructor(
     private readonly eventsService: EventsService,
     private readonly adsPermissionService: AdsPermissionService,
@@ -29,6 +32,7 @@ export class EventsController {
 
   @Post()
   async create(@Body() createEventDto: CreateEventDto, @Req() req: Request) {
+    this.logger.log('Creating a new event');
     if (createEventDto.type === 'ads') {
       await this.thowForbiddenIfAdsNotAllowed(
         req.user as { countryCode: string },
@@ -41,11 +45,13 @@ export class EventsController {
 
   @Get()
   findAll(@Query() pageOptionsDto: PageOptionsDto) {
+    this.logger.log('Finding all events');
     return this.eventsService.findAll(pageOptionsDto);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
+    this.logger.log(`Finding event with id ${id}`);
     return this.eventsService.findOne(+id);
   }
 
@@ -55,6 +61,7 @@ export class EventsController {
     @Body() updateEventDto: UpdateEventDto,
     @Req() req: Request,
   ) {
+    this.logger.log(`Updating event with id ${id}`);
     if (updateEventDto.type === 'ads') {
       await this.thowForbiddenIfAdsNotAllowed(
         req.user as { countryCode: string },
@@ -67,6 +74,7 @@ export class EventsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
+    this.logger.log(`Removing event with id ${id}`);
     return this.eventsService.remove(+id);
   }
 

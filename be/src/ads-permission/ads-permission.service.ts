@@ -1,10 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config'; // Import ConfigService
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AdsPermissionService {
+  private readonly logger = new Logger(AdsPermissionService.name);
+
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService, // Inject ConfigService
@@ -18,7 +20,7 @@ export class AdsPermissionService {
 
     if (!username || !password) {
       // better way to test this on a real project would be with some validation service for .env that has to pass before the app even starts to avoid runtime errors
-      console.error('ads permission api credetials missing in .env file');
+      this.logger.error('ads permission api credetials missing in .env file');
       throw new Error('ads permission api credetials missing in .env file');
     }
 
@@ -35,9 +37,10 @@ export class AdsPermissionService {
       );
 
       return { adsAllowed: res.data.ads === 'sure, why not!' };
-    } catch {
-      console.error(
+    } catch (error) {
+      this.logger.error(
         'getting ads permissions failed, returned false as default',
+        error.stack,
       );
       return { adsAllowed: false };
     }
