@@ -2,7 +2,7 @@
   <q-layout view="hHh Lpr lff" container class="window-height window-width">
     <q-header elevated :class="$q.dark.isActive ? 'bg-secondary' : 'bg-black'">
       <q-toolbar>
-        <q-toolbar-title>Eents7</q-toolbar-title>
+        <q-toolbar-title>Events7</q-toolbar-title>
       </q-toolbar>
     </q-header>
 

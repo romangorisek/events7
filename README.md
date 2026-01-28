@@ -4,7 +4,7 @@ Events7 is a full-stack application designed for managing events.
 
 To build it we used Vue3 and NestJs as base frameworks.
 
-On FE side we use Quasar framework te get predefined, full features components that are perfect for scenarios like dashboards and similar internal tools.
+On FE side we use Quasar framework to get predefined, full featured components that are perfect for scenarios like dashboards and similar internal tools.
 
 Key features supported:
  - Events CRUD with FE and BE validation
@@ -55,7 +55,7 @@ Follow these steps to set up and run the Events7 application locally.
     Open a new terminal, to run all the tests use following commands:
     ```bash
     cd fe
-    npm run test:e2e
+    npm run test:e2e # backend server must be running for the tests to pass
 
     cd ../be
     npm run test
